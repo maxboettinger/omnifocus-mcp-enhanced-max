@@ -7,9 +7,9 @@ function generateAppleScript(params) {
     // Sanitize and prepare parameters for AppleScript
     const name = params.name.replace(/['"\\]/g, '\\$&'); // Escape quotes and backslashes
     const note = params.note?.replace(/['"\\]/g, '\\$&') || '';
-    // Convert ISO dates to AppleScript format
-    const dueDate = params.dueDate ? formatDateForAppleScript(params.dueDate) : '';
-    const deferDate = params.deferDate ? formatDateForAppleScript(params.deferDate) : '';
+    // Generate locale-independent date construction scripts
+    const dueDateScript = params.dueDate ? formatDateForAppleScript(params.dueDate) : '';
+    const deferDateScript = params.deferDate ? formatDateForAppleScript(params.deferDate) : '';
     const flagged = params.flagged === true;
     const estimatedMinutes = params.estimatedMinutes?.toString() || '';
     const tags = params.tags || [];
@@ -53,8 +53,8 @@ function generateAppleScript(params) {
         
         -- Set task properties
         ${note ? `set note of newTask to "${note}"` : ''}
-        ${dueDate ? `set due date of newTask to date "${dueDate}"` : ''}
-        ${deferDate ? `set defer date of newTask to date "${deferDate}"` : ''}
+        ${dueDateScript ? `-- Set due date (locale-independent)\n          ${dueDateScript}\n          set due date of newTask to tempDate` : ''}
+        ${deferDateScript ? `-- Set defer date (locale-independent)\n          ${deferDateScript}\n          set defer date of newTask to tempDate` : ''}
         ${flagged ? `set flagged of newTask to true` : ''}
         ${estimatedMinutes ? `set estimated minutes of newTask to ${estimatedMinutes}` : ''}
         

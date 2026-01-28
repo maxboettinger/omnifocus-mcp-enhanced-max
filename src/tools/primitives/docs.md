@@ -53,8 +53,8 @@ Task and item editing primitives use a `generateAppleScript()` helper that build
 **Hierarchical Task Retrieval:**
 `getTaskById.ts` and `getCustomPerspectiveTasks.ts` preserve parent-child relationships. `getCustomPerspectiveTasks` returns a `taskMap` where each task contains `parent` and `children` fields, allowing reconstruction of the task tree.
 
-**Date Handling:**
-All date parameters use ISO format (YYYY-MM-DD or full ISO 8601). Primitives call `formatDateForAppleScript()` from @/src/utils/dateFormatter.ts before embedding dates in AppleScript, as AppleScript's date parsing is locale-dependent and fragile.
+**Locale-Independent Date Construction:**
+All date parameters use ISO format (YYYY-MM-DD or full ISO 8601). Primitives call `formatDateForAppleScript()` from @/src/utils/dateFormatter.ts which returns multi-line AppleScript code that constructs dates by setting numeric properties (year, month, day, time) rather than parsing date strings. This prevents locale-dependent failures where English month names like "January" cause error -30720 on systems with non-English locales (e.g., German). The generated code creates a `tempDate` variable that primitives inject into their AppleScript and then assign to OmniFocus date properties like `due date` or `defer date`.
 
 **Error Propagation:**
 AppleScript executions return JSON with `success` and `error` fields. Primitives parse these results and propagate errors upward. Temp file cleanup is wrapped in try-finally blocks to ensure cleanup even on failures.

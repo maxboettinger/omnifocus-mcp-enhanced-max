@@ -80,10 +80,11 @@ function generateAppleScript(params) {
 `;
         }
         else {
-            const formattedDueDate = formatDateForAppleScript(params.newDueDate);
+            const dueDateScript = formatDateForAppleScript(params.newDueDate);
             script += `
-          -- Update due date
-          set due date of foundItem to date "${formattedDueDate}"
+          -- Update due date (locale-independent date construction)
+          ${dueDateScript}
+          set due date of foundItem to tempDate
           set end of changedProperties to "due date"
 `;
         }
@@ -97,10 +98,11 @@ function generateAppleScript(params) {
 `;
         }
         else {
-            const formattedDeferDate = formatDateForAppleScript(params.newDeferDate);
+            const deferDateScript = formatDateForAppleScript(params.newDeferDate);
             script += `
-          -- Update defer date
-          set defer date of foundItem to date "${formattedDeferDate}"
+          -- Update defer date (locale-independent date construction)
+          ${deferDateScript}
+          set defer date of foundItem to tempDate
           set end of changedProperties to "defer date"
 `;
         }
