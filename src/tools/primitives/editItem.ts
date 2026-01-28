@@ -200,12 +200,13 @@ function generateAppleScript(params: EditItemParams): string {
           
           -- Then add new tags
           repeat with tagName in tagNames
+            set tagNameStr to tagName as text
             set tagObj to missing value
             try
-              set tagObj to first flattened tag where name = tagName
+              set tagObj to first flattened tag where name = tagNameStr
             end try
             if tagObj is missing value then
-              set tagObj to make new tag with properties {name:tagName}
+              set tagObj to make new tag with properties {name:tagNameStr}
             end if
             add tagObj to tags of foundItem
           end repeat
@@ -219,12 +220,13 @@ function generateAppleScript(params: EditItemParams): string {
           -- Add tags
           set tagNames to {${tagsList}}
           repeat with tagName in tagNames
+            set tagNameStr to tagName as text
             set tagObj to missing value
             try
-              set tagObj to first flattened tag where name = tagName
+              set tagObj to first flattened tag where name = tagNameStr
             end try
             if tagObj is missing value then
-              set tagObj to make new tag with properties {name:tagName}
+              set tagObj to make new tag with properties {name:tagNameStr}
             end if
             add tagObj to tags of foundItem
           end repeat
@@ -239,8 +241,9 @@ function generateAppleScript(params: EditItemParams): string {
           -- Remove tags
           set tagNames to {${tagsList}}
           repeat with tagName in tagNames
+            set tagNameStr to tagName as text
             try
-              set tagObj to first flattened tag where name = tagName
+              set tagObj to first flattened tag where name = tagNameStr
               remove tagObj from tags of foundItem
             end try
           end repeat
