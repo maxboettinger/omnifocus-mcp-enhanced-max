@@ -12,9 +12,20 @@ function generateAppleScript(params) {
     if (!id && !name) {
         return `return "{\\\"success\\\":false,\\\"error\\\":\\\"Either id or name must be provided\\\"}"`;
     }
+    // Prepare date construction code OUTSIDE the tell block to avoid error -1723
+    let dateSetupScript = '';
+    const useDueDate = params.newDueDate !== undefined && params.newDueDate !== "";
+    const useDeferDate = params.newDeferDate !== undefined && params.newDeferDate !== "";
+    if (useDueDate) {
+        dateSetupScript += formatDateForAppleScript(params.newDueDate, 'dueDateVar') + '\n';
+    }
+    if (useDeferDate) {
+        dateSetupScript += formatDateForAppleScript(params.newDeferDate, 'deferDateVar') + '\n';
+    }
     // Construct AppleScript with error handling
     let script = `
   try
+    ${dateSetupScript}
     tell application "OmniFocus"
       tell front document
         -- Find the item to edit
@@ -80,11 +91,9 @@ function generateAppleScript(params) {
 `;
         }
         else {
-            const dueDateScript = formatDateForAppleScript(params.newDueDate);
             script += `
-          -- Update due date (locale-independent date construction)
-          ${dueDateScript}
-          set due date of foundItem to tempDate
+          -- Update due date (date constructed outside tell block)
+          set due date of foundItem to dueDateVar
           set end of changedProperties to "due date"
 `;
         }
@@ -98,11 +107,9 @@ function generateAppleScript(params) {
 `;
         }
         else {
-            const deferDateScript = formatDateForAppleScript(params.newDeferDate);
             script += `
-          -- Update defer date (locale-independent date construction)
-          ${deferDateScript}
-          set defer date of foundItem to tempDate
+          -- Update defer date (date constructed outside tell block)
+          set defer date of foundItem to deferDateVar
           set end of changedProperties to "defer date"
 `;
         }

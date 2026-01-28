@@ -8,15 +8,20 @@
  * PROBLEM: AppleScript's `date "28 January 2026"` is locale-dependent.
  * English month names fail on German systems with error -30720.
  *
+ * ADDITIONAL PROBLEM: Setting date properties inside a `tell application` block
+ * causes error -1723 (errAEPrivilegeViolation) because AppleScript tries to resolve
+ * `year of tempDate` as an application property instead of a system date property.
+ *
  * SOLUTION: Construct dates by setting numeric properties (year, month, day, time)
- * which is locale-independent and works on all systems.
+ * which is locale-independent, AND generate the construction code to run OUTSIDE
+ * the tell application block, then pass the constructed date variable into the block.
  *
  * @param isoDate ISO date string (e.g., "2026-01-09" or "2026-01-09T12:00:00")
- * @returns Variable name (e.g., "dateVar123456") to use in AppleScript.
- *          Call getDateConstructionScript() to get the initialization code.
+ * @param varName Optional variable name (default: "tempDate")
+ * @returns AppleScript code that constructs the date in the specified variable
  * @throws Error if the date string is invalid
  */
-export function formatDateForAppleScript(isoDate: string): string {
+export function formatDateForAppleScript(isoDate: string, varName: string = 'tempDate'): string {
 	if (!isoDate || isoDate.trim() === '') {
 		throw new Error('Date string cannot be empty');
 	}
@@ -43,11 +48,13 @@ export function formatDateForAppleScript(isoDate: string): string {
 	// Generate AppleScript code to construct the date
 	// NOTE: Set year first, then month, then day to avoid date rollover issues
 	// (e.g., setting day to 31 when current month is February would cause problems)
+	// IMPORTANT: This code must run OUTSIDE any `tell application` block to avoid
+	// error -1723 where AppleScript tries to resolve date properties in app context
 	return [
-		`set tempDate to current date`,
-		`set year of tempDate to ${year}`,
-		`set month of tempDate to ${month}`,
-		`set day of tempDate to ${day}`,
-		`set time of tempDate to ${timeInSeconds}`
-	].join('\n          ');
+		`set ${varName} to current date`,
+		`set year of ${varName} to ${year}`,
+		`set month of ${varName} to ${month}`,
+		`set day of ${varName} to ${day}`,
+		`set time of ${varName} to ${timeInSeconds}`
+	].join('\n')
 }

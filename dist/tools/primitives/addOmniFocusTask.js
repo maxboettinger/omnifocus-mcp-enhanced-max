@@ -7,18 +7,26 @@ function generateAppleScript(params) {
     // Sanitize and prepare parameters for AppleScript
     const name = params.name.replace(/['"\\]/g, '\\$&'); // Escape quotes and backslashes
     const note = params.note?.replace(/['"\\]/g, '\\$&') || '';
-    // Generate locale-independent date construction scripts
-    const dueDateScript = params.dueDate ? formatDateForAppleScript(params.dueDate) : '';
-    const deferDateScript = params.deferDate ? formatDateForAppleScript(params.deferDate) : '';
     const flagged = params.flagged === true;
     const estimatedMinutes = params.estimatedMinutes?.toString() || '';
     const tags = params.tags || [];
     const projectName = params.projectName?.replace(/['"\\]/g, '\\$&') || '';
     const parentTaskId = params.parentTaskId?.replace(/['"\\]/g, '\\$&') || '';
     const parentTaskName = params.parentTaskName?.replace(/['"\\]/g, '\\$&') || '';
+    // Prepare date construction code OUTSIDE the tell block to avoid error -1723
+    let dateSetupScript = '';
+    const useDueDate = !!params.dueDate;
+    const useDeferDate = !!params.deferDate;
+    if (useDueDate) {
+        dateSetupScript += formatDateForAppleScript(params.dueDate, 'dueDateVar') + '\n';
+    }
+    if (useDeferDate) {
+        dateSetupScript += formatDateForAppleScript(params.deferDate, 'deferDateVar') + '\n';
+    }
     // Construct AppleScript with error handling
     let script = `
   try
+    ${dateSetupScript}
     tell application "OmniFocus"
       tell front document
         -- Determine the container (parent task, project, or inbox)
@@ -53,8 +61,8 @@ function generateAppleScript(params) {
         
         -- Set task properties
         ${note ? `set note of newTask to "${note}"` : ''}
-        ${dueDateScript ? `-- Set due date (locale-independent)\n          ${dueDateScript}\n          set due date of newTask to tempDate` : ''}
-        ${deferDateScript ? `-- Set defer date (locale-independent)\n          ${deferDateScript}\n          set defer date of newTask to tempDate` : ''}
+        ${useDueDate ? `set due date of newTask to dueDateVar` : ''}
+        ${useDeferDate ? `set defer date of newTask to deferDateVar` : ''}
         ${flagged ? `set flagged of newTask to true` : ''}
         ${estimatedMinutes ? `set estimated minutes of newTask to ${estimatedMinutes}` : ''}
         

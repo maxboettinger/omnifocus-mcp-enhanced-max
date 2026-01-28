@@ -44,7 +44,12 @@ The `PerspectiveEngine` includes Chinese comments indicating it's designed for O
 **Script Path Resolution:**
 `executeOmniFocusScript()` checks multiple paths (dist, src, relative) to locate scripts, enabling the code to work both in development and after TypeScript compilation.
 
-**Locale-Dependent Date Parsing Bug:**
-AppleScript's `date "28 January 2026"` syntax is locale-dependent and fails with error -30720 on non-English systems. The original implementation in commit b6f096b used English month names assuming they would work universally. This broke on German systems where AppleScript expects German month names. The fix (current implementation) constructs dates programmatically by setting numeric properties (`year`, `month`, `day`, `time`), which is locale-independent. The `formatDateForAppleScript()` function returns AppleScript code that creates a `tempDate` variable through property assignment rather than string parsing.
+**Locale-Dependent Date Parsing Bug (Error -30720):**
+AppleScript's `date "28 January 2026"` syntax is locale-dependent and fails with error -30720 on non-English systems. The original implementation in commit b6f096b used English month names assuming they would work universally. This broke on German systems where AppleScript expects German month names. The fix (commit 0bcb681) constructs dates programmatically by setting numeric properties (`year`, `month`, `day`, `time`), which is locale-independent.
+
+**Tell Block Context Bug (Error -1723):**
+The initial locale-independent fix (commit 0bcb681) had a critical flaw: date construction was happening INSIDE the `tell application "OmniFocus"` block. When AppleScript encounters `set year of tempDate to 2026` inside an application's tell block, it tries to resolve `year` as an application property rather than a system date property. This causes error -1723 (errAEPrivilegeViolation) with the German error message "„year" kann nicht gelesen werden. Zugriff nicht erlaubt."
+
+The solution is to construct dates OUTSIDE any `tell application` block, then pass the constructed date variables into the block. The `formatDateForAppleScript()` function now accepts a variable name parameter and returns AppleScript code that must be placed BEFORE the tell block. The primitive functions (editItem, addOmniFocusTask, addProject) generate date construction code at the script's beginning, outside all tell blocks.
 
 Created and maintained by Nori.
