@@ -22,7 +22,7 @@ Provides three main execution modes:
 The `executeOmniFocusScript()` function handles script path resolution across different installation contexts (dist vs src), parameter injection by prepending `injectedArgs` declarations, and escape handling for embedding scripts within JXA wrappers.
 
 **dateFormatter.ts:**
-Converts ISO date strings (YYYY-MM-DD) to AppleScript-compatible format ("D Month YYYY" e.g., "9 January 2026"). AppleScript's date parsing requires English month names and specific formatting regardless of system locale, necessitating this transformation.
+Generates locale-independent AppleScript code to construct dates from ISO date strings (YYYY-MM-DD). Returns multi-line AppleScript that creates a `tempDate` variable by programmatically setting year, month, day, and time properties using numeric values. This approach avoids AppleScript's locale-dependent date string parsing (e.g., `date "28 January 2026"` fails with error -30720 on German systems) by constructing dates through property assignment instead.
 
 **perspectiveEngine.ts:**
 Implements a `PerspectiveEngine` class that filters tasks based on OmniFocus 4.2+ perspective rules. The engine defines `PerspectiveRule` interfaces matching OmniFocus's rule types (availability, status, tags, dates, projects). The `getFilteredTasks()` method queries OmniFocus perspectives, applies additional filtering (hide completed, limit), and returns structured task results with perspective metadata.
@@ -43,5 +43,8 @@ The `PerspectiveEngine` includes Chinese comments indicating it's designed for O
 
 **Script Path Resolution:**
 `executeOmniFocusScript()` checks multiple paths (dist, src, relative) to locate scripts, enabling the code to work both in development and after TypeScript compilation.
+
+**Locale-Dependent Date Parsing Bug:**
+AppleScript's `date "28 January 2026"` syntax is locale-dependent and fails with error -30720 on non-English systems. The original implementation in commit b6f096b used English month names assuming they would work universally. This broke on German systems where AppleScript expects German month names. The fix (current implementation) constructs dates programmatically by setting numeric properties (`year`, `month`, `day`, `time`), which is locale-independent. The `formatDateForAppleScript()` function returns AppleScript code that creates a `tempDate` variable through property assignment rather than string parsing.
 
 Created and maintained by Nori.
