@@ -146,6 +146,25 @@ function generateAppleScript(params) {
 `;
             }
         }
+        // Move task to a different project
+        if (params.newProjectName !== undefined) {
+            const projectName = params.newProjectName.replace(/['"\\]/g, '\\$&');
+            script += `
+          -- Move to new project
+          set destProject to missing value
+          try
+            set destProject to first flattened project where name = "${projectName}"
+          end try
+
+          if destProject is not missing value then
+            move foundItem to end of tasks of destProject
+            set end of changedProperties to "project"
+          else
+            -- Project not found error
+            return "{\\\"success\\\":false,\\\"error\\\":\\\"Project not found: ${projectName}\\\"}"
+          end if
+`;
+        }
         // Handle tag operations
         if (params.replaceTags && params.replaceTags.length > 0) {
             const tagsList = params.replaceTags.map(tag => `"${tag.replace(/['"\\]/g, '\\$&')}"`).join(", ");
