@@ -28,7 +28,39 @@ node dist/server.js
 ```
 
 ### Testing
-This project uses manual testing with OmniFocus. The npm test script is a placeholder that always passes.
+```bash
+npm test          # Run tests once
+npm run test:watch # Run tests in watch mode
+```
+
+**Testing Framework:** Vitest (Jest-compatible, ESM-native, fast)
+
+**Testing Approach:**
+- Tests focus on pure utility functions and business logic
+- Does NOT test AppleScript/OmniJS/JXA scripts (require OmniFocus runtime)
+- Tests verify behavior, not implementation details
+- Timezone-aware: Uses explicit ISO datetime strings (e.g., `2026-01-28T00:00:00`) to ensure consistent behavior across timezones
+
+**Current Coverage:**
+- `dateFormatter.ts` - Comprehensive tests for AppleScript date generation
+- More tests can be added for other utilities as needed
+
+**When Adding New Tests:**
+1. Follow TDD: Write test first, watch it fail, implement, watch it pass
+2. Test behavior (what the function does), not implementation (how it does it)
+3. Use `describe` blocks for grouping related tests
+4. Use descriptive test names that explain the expected behavior
+
+### Build Artifacts (IMPORTANT)
+
+**The `dist/` folder contains compiled build artifacts and should NEVER be edited directly.**
+
+- All source code lives in `src/`
+- The build process (`npm run build`) compiles TypeScript from `src/` to `dist/`
+- Any manual edits to `dist/` will be **lost** on the next build
+- To make changes: edit source files in `src/`, then rebuild
+
+This is standard practice for compiled languages - always edit source, never edit build output.
 
 ## Architecture
 
