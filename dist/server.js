@@ -13,6 +13,7 @@ import * as getTaskByIdTool from './tools/definitions/getTaskById.js';
 import * as getTodayCompletedTasksTool from './tools/definitions/getTodayCompletedTasks.js';
 // Import perspective tools
 import * as getInboxTasksTool from './tools/definitions/getInboxTasks.js';
+import * as getNextFromInboxTool from './tools/definitions/getNextFromInbox.js';
 import * as getFlaggedTasksTool from './tools/definitions/getFlaggedTasks.js';
 import * as getForecastTasksTool from './tools/definitions/getForecastTasks.js';
 import * as getTasksByTagTool from './tools/definitions/getTasksByTag.js';
@@ -38,6 +39,7 @@ server.tool("get_task_by_id", "Get information about a specific task by ID or na
 server.tool("get_today_completed_tasks", "Get tasks completed today - view today's accomplishments", getTodayCompletedTasksTool.schema.shape, getTodayCompletedTasksTool.handler);
 // Register perspective tools
 server.tool("get_inbox_tasks", "Get tasks from OmniFocus inbox perspective", getInboxTasksTool.schema.shape, getInboxTasksTool.handler);
+server.tool("get_next_from_inbox", "Get the oldest item from OmniFocus inbox or indicate if empty", getNextFromInboxTool.schema.shape, getNextFromInboxTool.handler);
 server.tool("get_flagged_tasks", "Get flagged tasks from OmniFocus with optional project filtering", getFlaggedTasksTool.schema.shape, getFlaggedTasksTool.handler);
 server.tool("get_forecast_tasks", "Get tasks from OmniFocus forecast perspective (due/deferred tasks in date range)", getForecastTasksTool.schema.shape, getForecastTasksTool.handler);
 server.tool("get_tasks_by_tag", "Get tasks filtered by OmniFocus tags (labels like @home, @work, @urgent). Use this for tag-based filtering, NOT for custom perspective names. Tags are labels assigned to individual tasks.", getTasksByTagTool.schema.shape, getTasksByTagTool.handler);

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an MCP (Model Context Protocol) server that enables AI assistants to interact with OmniFocus on macOS. The server exposes 15+ tools for task management, including custom perspective access, hierarchical task display, and advanced filtering capabilities.
+This is an MCP (Model Context Protocol) server that enables AI assistants to interact with OmniFocus on macOS. The server exposes 16+ tools for task management, including custom perspective access, hierarchical task display, and advanced filtering capabilities.
 
 ## Build and Development Commands
 
@@ -115,6 +115,7 @@ For OmniJS scripts, `executeOmniFocusScript()` handles:
 
 **Perspective Queries:**
 - `get_inbox_tasks` - Inbox perspective
+- `get_next_from_inbox` - Get the oldest item from inbox following GTD workflow
 - `get_flagged_tasks` - Flagged tasks with optional project filtering
 - `get_forecast_tasks` - Due/deferred tasks in date range
 - `get_tasks_by_tag` - Filter by OmniFocus tags (NOT perspective names)

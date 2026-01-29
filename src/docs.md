@@ -16,7 +16,7 @@ After compilation, @/dist/server.js is executed by MCP clients (like Claude Desk
 **server.ts** - MCP server entry point that:
 - Creates an `McpServer` instance from `@modelcontextprotocol/sdk`
 - Imports tool definitions from @/src/tools/definitions
-- Registers 15+ tools using `server.tool(name, description, schema, handler)`
+- Registers 16+ tools using `server.tool(name, description, schema, handler)`
 - Connects the server to stdio transport for MCP communication
 - Groups tools into categories: CRUD operations, perspective tools, filtering, batch operations, custom perspectives
 

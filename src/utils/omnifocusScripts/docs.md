@@ -18,6 +18,7 @@ Tools in @/src/tools/primitives invoke these scripts via `executeOmniFocusScript
 - `getCustomPerspectiveTasks.js` - Switches to a custom perspective and traverses the content tree to collect tasks with hierarchical relationships
 - `omnifocusDump.js` - Full database export of all tasks, projects, folders, and tags
 - `filterTasks.js`, `filterTasksFixed.js`, `filterTasks_simple.js` - Filter tasks based on various criteria
+- `getNextFromInbox.js` - Returns the oldest active task from the inbox (tasks without Completed/Dropped status and with an added date), or null if inbox is empty. Sorts by `added` date ascending to find the first/oldest item.
 - `todayCompletedTasks.js`, `yesterdayCompletedTasks.js` - Retrieve completed tasks within time ranges
 - `forecastTasks.js` - Retrieve tasks from the forecast view (due/deferred)
 - `flaggedTasks.js`, `inboxTasks.js`, `tasksByTag.js` - Query specific task collections
