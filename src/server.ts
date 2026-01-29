@@ -15,6 +15,7 @@ import * as getTaskByIdTool from './tools/definitions/getTaskById.js';
 import * as getTodayCompletedTasksTool from './tools/definitions/getTodayCompletedTasks.js';
 // Import perspective tools
 import * as getInboxTasksTool from './tools/definitions/getInboxTasks.js';
+import * as getNextFromInboxTool from './tools/definitions/getNextFromInbox.js';
 import * as getFlaggedTasksTool from './tools/definitions/getFlaggedTasks.js';
 import * as getForecastTasksTool from './tools/definitions/getForecastTasks.js';
 import * as getTasksByTagTool from './tools/definitions/getTasksByTag.js';
@@ -101,6 +102,13 @@ server.tool(
   "Get tasks from OmniFocus inbox perspective",
   getInboxTasksTool.schema.shape,
   getInboxTasksTool.handler
+);
+
+server.tool(
+  "get_next_from_inbox",
+  "Get the oldest item from OmniFocus inbox or indicate if empty",
+  getNextFromInboxTool.schema.shape,
+  getNextFromInboxTool.handler
 );
 
 server.tool(

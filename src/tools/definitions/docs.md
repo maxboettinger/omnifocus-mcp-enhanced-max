@@ -36,6 +36,7 @@ Error responses include context about what failed (e.g., "Task not found with ID
 ### Things to Know
 
 **Tool-Specific Validation:**
+- `getNextFromInbox.ts` - Uses an empty Zod schema `z.object({})` since the tool takes no parameters, following YAGNI principle for initial version
 - `addOmniFocusTask.ts` - The primitive handles validation of parent task parameters; the definition focuses on response formatting
 - `editItem.ts` - Checks that either `id` or `name` is provided before calling the primitive, as the operation cannot proceed without an identifier
 - `filterTasks.ts` - Accepts complex filtering parameters (status, dates, project names, tags, search text) with many optional fields

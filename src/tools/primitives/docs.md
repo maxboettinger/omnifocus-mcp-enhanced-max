@@ -25,6 +25,7 @@ The separation between primitives and definitions enables the business logic to 
 
 **Query Operations:**
 - `getInboxTasks.ts` - Returns tasks in the inbox using `flattenedTasks` where `inInbox = true`
+- `getNextFromInbox.ts` - Returns the oldest active task from the inbox or indicates if empty, executing @/src/utils/omnifocusScripts/getNextFromInbox.js
 - `getFlaggedTasks.ts` - Returns flagged tasks with optional project filtering
 - `getForecastTasks.ts` - Returns tasks with due dates or defer dates in a specified date range
 - `getTodayCompletedTasks.ts` - Uses @/src/utils/omnifocusScripts/todayCompletedTasks.js to retrieve today's completed tasks
