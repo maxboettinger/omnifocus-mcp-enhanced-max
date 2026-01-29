@@ -59,6 +59,9 @@ OmniJS provides richer APIs for perspective access and tree traversal, while App
 **Type System:**
 The type system includes both external types (types.ts) used in tool responses and internal types (omnifocustypes.ts) matching OmniFocus's API surface. The `dumpDatabase` function transforms between OmniFocus's internal representation and the exported `OmnifocusDatabase` format.
 
+**Testing:**
+The codebase uses Vitest for automated testing of pure utility functions and business logic. Tests are colocated with source files (e.g., @/src/utils/dateFormatter.test.ts). The testing workflow follows TDD principles: write tests first, watch them fail, implement, watch them pass. Tests focus on behavior (what the function does) rather than implementation details (how it does it). AppleScript/OmniJS/JXA scripts are not tested as they require OmniFocus runtime environment.
+
 **Async Execution:**
 All tool handlers are async functions that await script execution. The server uses promisified child_process.exec for running osascript commands, with temp file management for script content.
 

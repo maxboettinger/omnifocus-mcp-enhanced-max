@@ -22,12 +22,18 @@ Provides three main execution modes:
 The `executeOmniFocusScript()` function handles script path resolution across different installation contexts (dist vs src), parameter injection by prepending `injectedArgs` declarations, and escape handling for embedding scripts within JXA wrappers.
 
 **dateFormatter.ts:**
-Generates locale-independent AppleScript code to construct dates from ISO date strings (YYYY-MM-DD). Returns multi-line AppleScript that creates a `tempDate` variable by programmatically setting year, month, day, and time properties using numeric values. This approach avoids AppleScript's locale-dependent date string parsing (e.g., `date "28 January 2026"` fails with error -30720 on German systems) by constructing dates through property assignment instead.
+Generates locale-independent AppleScript code to construct dates from ISO date strings (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS). Returns multi-line AppleScript that creates a `tempDate` variable by programmatically setting year, month, day, and time properties using numeric values. This approach avoids AppleScript's locale-dependent date string parsing (e.g., `date "28 January 2026"` fails with error -30720 on German systems) by constructing dates through property assignment instead.
+
+**dateFormatter.test.ts:**
+Comprehensive test suite (14 tests) verifying dateFormatter behavior across multiple scenarios: basic date formatting, custom variable names, error handling (empty/invalid dates), time calculations (midnight, noon, arbitrary times), and output format validation. Tests use explicit ISO datetime strings with timezone information to ensure consistent behavior. All tests focus on behavior (does it generate correct AppleScript?) rather than implementation details (how does it parse dates internally). This test suite establishes the testing pattern for utility functions in the codebase.
 
 **perspectiveEngine.ts:**
 Implements a `PerspectiveEngine` class that filters tasks based on OmniFocus 4.2+ perspective rules. The engine defines `PerspectiveRule` interfaces matching OmniFocus's rule types (availability, status, tags, dates, projects). The `getFilteredTasks()` method queries OmniFocus perspectives, applies additional filtering (hide completed, limit), and returns structured task results with perspective metadata.
 
 ### Things to Know
+
+**Testing Utilities:**
+Pure utility functions in this folder should have corresponding test files (e.g., dateFormatter.test.ts). Tests should be colocated with source files, focus on behavior rather than implementation, and use explicit test data (like ISO datetime strings) to ensure consistent behavior. The dateFormatter.test.ts suite demonstrates the testing pattern: describe blocks for grouping, explicit expectations, timezone-aware test data, and comprehensive edge case coverage.
 
 **Temp File Execution:**
 All script execution writes to temp files in `tmpdir()` rather than passing scripts via command-line arguments. This avoids shell escaping issues with quotes, backslashes, and special characters that plagued earlier implementations.

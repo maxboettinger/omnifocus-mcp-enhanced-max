@@ -27,10 +27,18 @@ TypeScript source implementing the MCP server, tool definitions, primitives, and
 See @/src/docs.md for architecture details.
 
 **Build System:**
-- `tsconfig.json` - TypeScript configuration targeting ES2022 with module type ES2022
-- `package.json` - Defines build scripts, dependencies (@modelcontextprotocol/sdk, zod), and package metadata
+- `tsconfig.json` - TypeScript configuration targeting ES2022 with module type ES2022, includes Vitest types
+- `package.json` - Defines build scripts, test scripts, dependencies (@modelcontextprotocol/sdk, zod), dev dependencies (vitest), and package metadata
 - Build command: `tsc && npm run copy-files && chmod 755 dist/server.js`
 - Copy-files step: Copies @/src/utils/omnifocusScripts/*.js to @/dist/utils/omnifocusScripts/
+- Test commands: `npm test` (run once), `npm run test:watch` (continuous)
+
+**Testing System:**
+- `vitest.config.ts` - Vitest configuration for ESM-native, Jest-compatible testing
+- Test framework: Vitest with Node.js environment and v8 coverage provider
+- Test location: Colocated with source files (e.g., @/src/utils/dateFormatter.test.ts)
+- Testing focus: Pure utility functions and business logic; AppleScript/OmniJS/JXA scripts are not tested (require OmniFocus runtime)
+- TDD workflow enabled: Write test first, watch it fail, implement, watch it pass
 
 **Script Files:**
 JavaScript files in @/src/utils/omnifocusScripts are not TypeScript-compiled; they're JXA and OmniJS scripts copied verbatim to dist during build and executed by osascript at runtime.
@@ -75,9 +83,13 @@ A core feature is the PerspectiveEngine (@/src/utils/perspectiveEngine.ts) which
 **Error Handling:**
 Script execution failures are caught and formatted into MCP error responses with `isError: true`. AppleScript and OmniJS errors are propagated from temp file execution through primitives to tool definitions, where they're formatted into user-friendly error messages.
 
+**Build Artifacts:**
+The @/dist folder contains compiled build output and should NEVER be edited directly. All source code lives in @/src. The TypeScript build process compiles @/src to @/dist, and manual edits to @/dist will be lost on the next build. This is standard practice for compiled projects: always edit source, never edit build output.
+
 **Documentation:**
 - `README.md` - User-facing setup and usage documentation
 - `perspective.html.md` - Extended documentation on perspective functionality
+- `CLAUDE.md` - AI assistant guidance including architecture, testing practices, and build artifact conventions
 - `docs.md` files throughout @/src - Internal architecture documentation (this Noridoc system)
 
 Created and maintained by Nori.
